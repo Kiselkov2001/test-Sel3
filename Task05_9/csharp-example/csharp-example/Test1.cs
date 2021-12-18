@@ -21,7 +21,7 @@ namespace GibrPlan.Test
         private IWebDriver driver;
         private WebDriverWait wait;
 
-        public static string Path = ""; //@"C:\ProjectsVS\test\Doc\Tutorial\Selenium\training\drivers";
+        public static string Path = "";//@"C:\ProjectsVS\test\Doc\Tutorial\Selenium\training\drivers";
 
 
         [SetUp]
@@ -40,55 +40,42 @@ namespace GibrPlan.Test
         #region Scenario
         public void Scenario()
         {
-            driver.Url = "http://localhost/litecart/admin/?app=countries&doc=countries"; TimeSpan.FromSeconds(60);
+            //Сделайте сценарии, который на странице http://localhost/litecart/admin/?app=geo_zones&doc=geo_zones заходит в каждую из стран и проверяет, что зоны расположены в алфавитном порядке.
+            driver.Url = "http://localhost/litecart/admin/?app=geo_zones&doc=geo_zones"; TimeSpan.FromSeconds(60);
             driver.FindElement(By.Name("username")).SendKeys("admin"); TimeSpan.FromSeconds(60);
             driver.FindElement(By.Name("password")).SendKeys("admin"); TimeSpan.FromSeconds(60);
 
             driver.FindElement(By.Name("login")).Click(); Thread.Sleep(5000);
-            driver.Manage().Window.Maximize(); Thread.Sleep(100);
+            //driver.Manage().Window.Maximize(); Thread.Sleep(1000);
 
-            IWebElement winElem;
-
-            int colName = 5;
-            int colZone = 6;
+            int colName = 3;
+            int colZone = 4;
             ReadOnlyCollection<IWebElement> arrName;
             ReadOnlyCollection<IWebElement> arrZone;
             ReadOnlyCollection<IWebElement> arrZoneCountry;
+            
+            arrName = driver.FindElements(By.XPath($"//form[@name='geo_zones_form']/table//tr[@class='row']/td[{colName}]/a"));
+            arrZone = driver.FindElements(By.XPath($"//form[@name='geo_zones_form']/table//tr[@class='row']/td[{colZone}]"));
 
-            arrName = driver.FindElements(By.XPath($"//form[@name='countries_form']/table//tr[@class='row']/td[{colName}]/a"));
-            arrZone = driver.FindElements(By.XPath($"//form[@name='countries_form']/table//tr[@class='row']/td[{colZone}]"));
-
-            //а) проверяет, что страны расположены в алфавитном порядке
-            for (int i = 0; i < arrName.Count - 1; i++)
-            {
-                Scroll(0, 30);
-                string txt1 = arrName[i + 0].GetAttribute("textContent");
-                string txt2 = arrName[i + 1].GetAttribute("textContent");
-                Assert.IsTrue(txt1.CompareTo(txt2) <= 0, $"Нарушен алфавитный порядок '{txt1}' > '{txt2}'");
-            }
-
-            //б) для тех стран, у которых количество зон отлично от нуля -- открывает страницу этой страны и там проверяет, что геозоны расположены в алфавитном порядке
             for (int i = 0; i < arrName.Count; i++)
             {
                 if (arrZone[i].GetAttribute("textContent") != "0")
                 {
-                    Scroll(0, arrZone[i].Location.Y); Thread.Sleep(1000);
-                    arrName[i].Click(); Thread.Sleep(1000);
+                    arrName[i].Click(); Thread.Sleep(1000); 
 
-                    winElem = driver.FindElement(By.XPath($"//table[@id='table-zones']")); Scroll(0, winElem.Location.Y); Thread.Sleep(1000);
-                    arrZoneCountry = driver.FindElements(By.XPath($"//table[@id='table-zones']//tr[not(@class)]/td[3]"));
+                    arrZoneCountry = driver.FindElements(By.XPath($"//table[@class='dataTable']//tr[not(@class)]/td[3]//option[@selected='selected']"));
 
                     for (int j = 0; j < arrZoneCountry.Count - 1; j++)
                     {
-                        Scroll(0, 20);
+                        Scroll(0, 30);
                         string txt1 = arrZoneCountry[j + 0].GetAttribute("textContent");
                         string txt2 = arrZoneCountry[j + 1].GetAttribute("textContent"); if (string.IsNullOrEmpty(txt2)) continue;
                         Assert.IsTrue(txt1.CompareTo(txt2) <= 0, $"Нарушен алфавитный порядок '{txt1}' > '{txt2}'");
                     }
 
-                    driver.Navigate().Back(); Thread.Sleep(1000);
-                    arrName = driver.FindElements(By.XPath($"//form[@name='countries_form']/table//tr[@class='row']/td[{colName}]/a"));
-                    arrZone = driver.FindElements(By.XPath($"//form[@name='countries_form']/table//tr[@class='row']/td[{colZone}]"));
+                    driver.Navigate().Back(); Thread.Sleep(1000); 
+                    arrName = driver.FindElements(By.XPath($"//form[@name='geo_zones_form']/table//tr[@class='row']/td[{colName}]/a"));
+                    arrZone = driver.FindElements(By.XPath($"//form[@name='geo_zones_form']/table//tr[@class='row']/td[{colZone}]"));
                 }
             }
 
@@ -118,6 +105,14 @@ namespace GibrPlan.Test
             //action.MoveToElement(winElem).Build().Perform();
 
             action.MoveByOffset(winElem.Location.X, winElem.Location.Y).Perform();
+        }
+
+        public void ClickShot(IWebElement winElem)
+        {
+            Actions action = new Actions(driver);
+            action.Click(winElem);
+            //action.Build();
+            //action.Perform(); // OpenQA.Selenium.WebDriverTimeoutException : timeout: Timed out receiving message from renderer: 5.000
         }
 
         #endregion Scenario
@@ -246,7 +241,7 @@ namespace GibrPlan.Test
             {
                 driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5); // Set implicit wait timeouts to 5 secs
                 driver.Manage().Timeouts().AsynchronousJavaScript = new TimeSpan(0, 0, 0, 5);  // Set script timeouts to 5 secs
-                driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(5);
+                driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(25);
 
                 wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
             }
