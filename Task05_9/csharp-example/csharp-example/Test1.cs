@@ -53,7 +53,9 @@ namespace GibrPlan.Test
             ReadOnlyCollection<IWebElement> arrName;
             ReadOnlyCollection<IWebElement> arrZone;
             ReadOnlyCollection<IWebElement> arrZoneCountry;
-            
+
+            string txt1 = null, txt2 = null;
+
             arrName = driver.FindElements(By.XPath($"//form[@name='geo_zones_form']/table//tr[@class='row']/td[{colName}]/a"));
             arrZone = driver.FindElements(By.XPath($"//form[@name='geo_zones_form']/table//tr[@class='row']/td[{colZone}]"));
 
@@ -67,10 +69,11 @@ namespace GibrPlan.Test
 
                     for (int j = 0; j < arrZoneCountry.Count - 1; j++)
                     {
-                        Scroll(0, 30);
-                        string txt1 = arrZoneCountry[j + 0].GetAttribute("textContent");
-                        string txt2 = arrZoneCountry[j + 1].GetAttribute("textContent"); if (string.IsNullOrEmpty(txt2)) continue;
+                        //Scroll(0, 30);
+                        if (j == 0) txt1 = arrZoneCountry[j + 0].GetAttribute("textContent");
+                        txt2 = arrZoneCountry[j + 1].GetAttribute("textContent"); if (string.IsNullOrEmpty(txt2)) continue;
                         Assert.IsTrue(txt1.CompareTo(txt2) <= 0, $"Нарушен алфавитный порядок '{txt1}' > '{txt2}'");
+                        txt1 = txt2;
                     }
 
                     driver.Navigate().Back(); Thread.Sleep(1000); 

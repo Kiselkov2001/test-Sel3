@@ -43,31 +43,24 @@ namespace GibrPlan.Test
             driver.Manage().Window.Maximize(); Thread.Sleep(100);
 
             ReadOnlyCollection<IWebElement> items;
-            ReadOnlyCollection<IWebElement> sticks;
+            ReadOnlyCollection<IWebElement> sticks; Scroll(0, 400);
 
-            IWebElement [] part = { null, null, null};
-            part[0] = driver.FindElement(By.CssSelector("#box-most-popular"));
-            part[1] = driver.FindElement(By.CssSelector("#box-campaigns"));
-            part[2] = driver.FindElement(By.CssSelector("#box-latest-products"));
-
-            for (int i = 0; i < 3; i++)
+            items = driver.FindElements(By.XPath("//div[starts-with(@class,'box')]//ul/li[starts-with(@class,'product')]"));
+            foreach (IWebElement item in items)
             {
-                IJavaScriptExecutor jse = (IJavaScriptExecutor)driver;
-                jse.ExecuteScript("window.scrollBy(0,400)", ""); Thread.Sleep(3000);
-
-                int j = 0;
-                items = part[i].FindElements(By.XPath(".//ul/li"));
-                foreach (IWebElement item in items)
-                {
-                    sticks = item.FindElements(By.XPath(".//*[starts-with(@class,'sticker')]"));
-                    Assert.IsTrue(sticks != null, $"{i} не выполнено условие 'sticks != null'");
-                    Assert.IsTrue(sticks.Count == 1, $"{i} не выполнено условие '(sticks.Count == 1)'");
-                    j++;
-                }
+                sticks = item.FindElements(By.XPath(".//*[starts-with(@class,'sticker')]")); 
+                Assert.IsTrue(sticks.Count == 1, $"не выполнено условие '(sticks.Count == 1)'"); 
             }
 
+            Scroll(0, 400);
             Thread.Sleep(3000);
 
+        }
+
+        public void Scroll(int OffsetX, int OffsetY)
+        {
+            IJavaScriptExecutor jse = (IJavaScriptExecutor)driver;
+            jse.ExecuteScript($"window.scrollBy({OffsetX},{OffsetY})", ""); Thread.Sleep(3000);
         }
 
         public void MoveTo(IWebElement winElem)

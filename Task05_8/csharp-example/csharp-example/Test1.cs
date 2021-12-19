@@ -55,16 +55,19 @@ namespace GibrPlan.Test
             ReadOnlyCollection<IWebElement> arrZone;
             ReadOnlyCollection<IWebElement> arrZoneCountry;
 
+            string txt1 = null, txt2 = null;
+
             arrName = driver.FindElements(By.XPath($"//form[@name='countries_form']/table//tr[@class='row']/td[{colName}]/a"));
             arrZone = driver.FindElements(By.XPath($"//form[@name='countries_form']/table//tr[@class='row']/td[{colZone}]"));
 
             //а) проверяет, что страны расположены в алфавитном порядке
             for (int i = 0; i < arrName.Count - 1; i++)
             {
-                Scroll(0, 30);
-                string txt1 = arrName[i + 0].GetAttribute("textContent");
-                string txt2 = arrName[i + 1].GetAttribute("textContent");
+                //Scroll(0, 30);
+                if (i == 0) txt1 = arrName[i].GetAttribute("textContent");
+                txt2 = arrName[i + 1].GetAttribute("textContent");
                 Assert.IsTrue(txt1.CompareTo(txt2) <= 0, $"Нарушен алфавитный порядок '{txt1}' > '{txt2}'");
+                txt1 = txt2;
             }
 
             //б) для тех стран, у которых количество зон отлично от нуля -- открывает страницу этой страны и там проверяет, что геозоны расположены в алфавитном порядке
@@ -80,10 +83,11 @@ namespace GibrPlan.Test
 
                     for (int j = 0; j < arrZoneCountry.Count - 1; j++)
                     {
-                        Scroll(0, 20);
-                        string txt1 = arrZoneCountry[j + 0].GetAttribute("textContent");
-                        string txt2 = arrZoneCountry[j + 1].GetAttribute("textContent"); if (string.IsNullOrEmpty(txt2)) continue;
+                        //Scroll(0, 20);
+                        if (j == 0) txt1 = arrZoneCountry[j + 0].GetAttribute("textContent");
+                        txt2 = arrZoneCountry[j + 1].GetAttribute("textContent"); if (string.IsNullOrEmpty(txt2)) continue;
                         Assert.IsTrue(txt1.CompareTo(txt2) <= 0, $"Нарушен алфавитный порядок '{txt1}' > '{txt2}'");
+                        txt1 = txt2;
                     }
 
                     driver.Navigate().Back(); Thread.Sleep(1000);
