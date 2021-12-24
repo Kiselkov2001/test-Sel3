@@ -28,8 +28,8 @@ namespace GibrPlan.Test
         private class Product
         {
             //general
-            public string name = "Pyramid";
-            public string code = "12345";
+            public string name = "Pyramid{num}";
+            public string code = "1{num}";
             public string enabled = "true";
             public string gender = "true";
             public string file = "Pyramid.jpeg";
@@ -40,6 +40,12 @@ namespace GibrPlan.Test
             public string purshprice = "10";
             public string currency = "US Dollars";
             public string price = "12";
+
+            public Product()
+            {
+                name = name.Replace("{num}", DateTime.Now.ToString("mmss"));
+                code = code.Replace("{num}", DateTime.Now.ToString("mmss"));
+            }
         }
 
         private Product prod = new Product();

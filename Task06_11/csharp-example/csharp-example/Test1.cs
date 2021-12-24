@@ -117,15 +117,15 @@ namespace GibrPlan.Test
                     winElem.Click(); Thread.Sleep(100); winElem.Clear(); winElem.SendKeys(Keys.Home + txt);
                     break;
                 case "PopupList":
-                    SelectElement sel = new SelectElement(winElem);
-                    sel.SelectByText(txt);
+                    //SelectElement sel = new SelectElement(winElem);
+                    //sel.SelectByText(txt);
 
                     //Helper.SelectByText(winElem, txt);
 
-                    //winElem.Click(); Thread.Sleep(100); //regPage.countryButton
-                    //winElem = regPage.countrySearch;
-                    //winElem.Clear(); Thread.Sleep(100);
-                    //winElem.SendKeys(txt + Keys.Return); Thread.Sleep(100);
+                    winElem.Click(); Thread.Sleep(100); //regPage.countryButton
+                    winElem = regPage.countrySearch;
+                    winElem.Clear(); Thread.Sleep(100);
+                    winElem.SendKeys(txt + Keys.Return); Thread.Sleep(100);
 
                     break;
         }

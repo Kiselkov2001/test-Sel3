@@ -16,8 +16,8 @@ namespace GibrPlan.Test.Pages
         public IWebElement city => driver.FindElementExt(By.XPath("//*[@id='create-account']//table//input[@name='city']"));
         public IWebElement address1 => driver.FindElementExt(By.XPath("//*[@id='create-account']//table//input[@name='address1']"));
         public IWebElement postcode => driver.FindElementExt(By.XPath("//*[@id='create-account']//table//input[@name='postcode']"));
-        public IWebElement countryButton => driver.FindElementExt(By.XPath("//*[@class='select2-selection__rendered']"));
-        public IWebElement country => driver.FindElementExt(By.CssSelector("select[name=country_code]"));
+        public IWebElement country => driver.FindElementExt(By.XPath("//*[@class='select2-selection__rendered']"));
+        public IWebElement countrySelect => driver.FindElementExt(By.CssSelector("select[name=country_code]"));
         public IWebElement countrySearch => driver.FindElementExt(By.XPath("//*[@class='select2-search__field']"));
 
 
